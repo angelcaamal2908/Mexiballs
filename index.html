@@ -1,0 +1,3599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" id="metaThemeColor" content="#FAF5EC">
+  <link rel="icon" type="image/png" href="imagenes/logo.png">
+  <meta name="description" content="MEXIBALLS: botanas esféricas artesanales con sabores de México y Yucatán. Tizimín, Yucatán.">
+  <title>MEXIBALLS | El corazón de Yucatán en cada bocado</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #FAF5EC;
+      --surface: #FFFDF9;
+      --surface-alt: #F2E8D9;
+      --surface-warm: #EAE0CF;
+      --primary: #B83B1E;
+      --primary-dark: #932D15;
+      --secondary: #1C4E38;
+      --accent: #C88A1E;
+      --ink: #1F1A16;
+      --muted: #675C52;
+      --border: #E2D5C3;
+      --radius: 6px;
+      --transition: 0.28s ease;
+    }
+
+    /* Paletas por temporada */
+    body[data-season="navidad"] {
+      --bg: #F8F4EE;
+      --surface: #FFFDFB;
+      --surface-alt: #ECE4D8;
+      --surface-warm: #E2D6C5;
+      --primary: #9B2226;
+      --primary-dark: #78191C;
+      --secondary: #1B4332;
+      --accent: #B6862C;
+      --ink: #1C1917;
+      --border: #DFD3C3;
+    }
+
+    body[data-season="newyear"] {
+      --bg: #F7F5F0;
+      --surface: #FFFFFF;
+      --surface-alt: #ECE8DF;
+      --surface-warm: #E0DACD;
+      --primary: #1E2D3D;
+      --primary-dark: #131D28;
+      --secondary: #7C5832;
+      --accent: #C0952B;
+      --ink: #171A1D;
+      --border: #DDD6C9;
+    }
+
+    body[data-season="sanvalentin"] {
+      --bg: #FCF4F3;
+      --surface: #FFFDFD;
+      --surface-alt: #F5E5E3;
+      --surface-warm: #EAD3D0;
+      --primary: #A62C43;
+      --primary-dark: #821F32;
+      --secondary: #4B2434;
+      --accent: #C97363;
+      --ink: #23171B;
+      --border: #E6D1CE;
+    }
+
+    body[data-season="verano"] {
+      --bg: #FBF7EE;
+      --surface: #FFFDF8;
+      --surface-alt: #F2E9D5;
+      --surface-warm: #E6D9BE;
+      --primary: #C45519;
+      --primary-dark: #9C4110;
+      --secondary: #165B61;
+      --accent: #D69718;
+      --ink: #1E1B16;
+      --border: #E4D7C0;
+    }
+
+    body[data-season="halloween"] {
+      --bg: #F8F2EA;
+      --surface: #FFFBF6;
+      --surface-alt: #EFE2D2;
+      --surface-warm: #E3D1BC;
+      --primary: #B64914;
+      --primary-dark: #8F370D;
+      --secondary: #3C2238;
+      --accent: #D48119;
+      --ink: #1F1814;
+      --border: #E2D2BF;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    .display {
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: -0.025em;
+      font-weight: 500;
+    }
+
+    .script {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* Cenefa artesanal superior */
+    .craft-border {
+      height: 5px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--primary) 0 24px,
+        var(--accent) 24px 36px,
+        var(--secondary) 36px 60px,
+        var(--bg) 60px 68px
+      );
+      transition: background var(--transition);
+    }
+
+    /* Barra superior de temporada + selector funcional */
+    .utility-bar {
+      background: var(--secondary);
+      color: #FBF7F0;
+      font-size: 0.78rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      transition: background-color var(--transition);
+    }
+
+    .utility-inner {
+      min-height: 40px;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .season-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.72rem;
+    }
+
+    .season-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+    }
+
+    .season-switcher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .season-switcher label {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.03em;
+    }
+
+    .season-switcher select {
+      background: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .season-switcher select option {
+      background: #1F1A16;
+      color: #FFFFFF;
+    }
+
+    /* Navegación */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 253, 249, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 54px;
+      height: 48px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .brand-word {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--primary);
+      font-size: 1.08rem;
+      transition: color var(--transition);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding: 4px 0;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--primary); }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 12px 22px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: #FFFFFF;
+    }
+
+    .btn-outline {
+      border-color: var(--ink);
+      color: var(--ink);
+      background: transparent;
+    }
+    .btn-outline:hover {
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    .btn-small {
+      padding: 8px 15px;
+      font-size: 0.82rem;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      color: var(--ink);
+      font-size: 1.35rem;
+    }
+
+    /* Hero Editorial */
+    .hero {
+      padding: 44px 0 56px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      transition: background-color var(--transition);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .season-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--secondary);
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+    }
+
+    .season-pill span { color: var(--primary); }
+
+    .eyebrow {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.9rem, 5.6vw, 4.9rem);
+      line-height: 0.98;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+      font-style: italic;
+    }
+
+    .tagline {
+      font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+      color: var(--secondary);
+      margin: 0 0 14px;
+    }
+
+    .hero-copy {
+      max-width: 500px;
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0 0 22px;
+    }
+
+    .offer-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-media {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-frame {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .hero-frame:has(img[style*="display: none"]) {
+      display: none;
+    }
+
+    .hero-frame img {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 430px;
+      object-fit: contain;
+    }
+
+    .hero-stamp {
+      position: absolute;
+      right: -12px;
+      bottom: -14px;
+      z-index: 4;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFFDF9;
+      border: 2px solid var(--surface);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      transform: rotate(-7deg);
+      transition: background-color var(--transition);
+    }
+
+    /* Índice rápido de menú */
+    .menu-index {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+    }
+
+    .index-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .index-head a {
+      color: var(--primary);
+      letter-spacing: 0.04em;
+      text-transform: none;
+      font-size: 0.82rem;
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .index-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .index-item:hover {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    .index-item b {
+      font-family: Georgia, serif;
+      font-weight: 600;
+      font-size: 0.98rem;
+    }
+
+    .index-item span {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    /* Banda de promoción */
+    .promo-band {
+      background: var(--secondary);
+      color: #FFFDF9;
+      padding: 36px 0;
+      transition: background-color var(--transition);
+    }
+
+    .promo-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .promo-kicker {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      color: #E7C687;
+      text-transform: uppercase;
+    }
+
+    .promo-inner h2 {
+      font-family: Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+      line-height: 1.04;
+      margin: 8px 0;
+    }
+
+    .promo-inner h2 em { color: #F0C97D; }
+
+    .promo-inner p {
+      margin: 0;
+      color: rgba(255, 253, 249, 0.84);
+      font-size: 0.95rem;
+    }
+
+    .promo-seal {
+      width: 108px;
+      height: 108px;
+      flex: none;
+      border: 1.5px solid #E7C687;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-6deg);
+      color: #F3D79C;
+    }
+
+    .promo-seal strong {
+      font-family: Georgia, serif;
+      font-weight: 500;
+      font-size: 2.3rem;
+      line-height: 1;
+    }
+
+    .promo-seal span {
+      text-align: center;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      margin-top: 4px;
+      line-height: 1.2;
+    }
+
+    /* Secciones generales */
+    .section { padding: 72px 0; }
+
+    .section-head {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 38px;
+    }
+
+    .section-kicker {
+      display: block;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section h2 {
+      font-size: clamp(2.1rem, 4.4vw, 3.1rem);
+      line-height: 1.06;
+      color: var(--ink);
+      margin: 0 0 12px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Historia */
+    .about {
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .about-card {
+      background: var(--primary);
+      color: #FFFDF9;
+      padding: 36px 32px;
+      border-radius: var(--radius);
+      min-height: 270px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color var(--transition);
+    }
+
+    .about-card strong {
+      font-family: Georgia, serif;
+      font-weight: 500;
+      font-size: 2.35rem;
+      line-height: 1.08;
+    }
+
+    .about-card span {
+      color: rgba(255, 253, 249, 0.85);
+      font-size: 0.92rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      padding-top: 14px;
+      margin-top: 24px;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    .about-attributes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .attr-item strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+
+    .attr-item small {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    /* Menú */
+    .menu-section { background: var(--surface); }
+
+    .menu-search {
+      margin: 22px auto 0;
+      max-width: 390px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+    }
+
+    .menu-search input {
+      border: 0;
+      background: transparent;
+      outline: none;
+      flex: 1;
+      min-width: 0;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .flavor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .flavor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .flavor-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .flavor-top {
+      height: 195px;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flavor-top img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: relative;
+      z-index: 2;
+    }
+
+    .flavor-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 18px;
+      color: #FFFDF9;
+    }
+
+    .flavor-fallback span {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .flavor-fallback b {
+      font-family: Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 500;
+    }
+
+    .pastor .flavor-fallback { background: linear-gradient(155deg, #A9381E, #C96A2B); }
+    .esquites .flavor-fallback { background: linear-gradient(155deg, #1E563B, #6A8B3D); }
+    .costa .flavor-fallback { background: linear-gradient(155deg, #184258, #3D7A8C); }
+    .hongos .flavor-fallback { background: linear-gradient(155deg, #6E472B, #A87C4F); }
+
+    .flavor-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .flavor-body h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+    }
+
+    .flavor-body p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 8px 0 18px;
+      flex: 1;
+    }
+
+    .flavor-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .flavor-foot small {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .empty-search {
+      text-align: center;
+      padding: 32px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    /* Armador de caja y Punto de Venta */
+    .builder {
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .builder-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .builder-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(20px, 4vw, 36px);
+    }
+
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .step-block {
+      margin-bottom: 24px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .field-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+
+    .size-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .size-option {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 12px;
+      text-align: left;
+      background: var(--bg);
+      color: var(--ink);
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .size-option.active {
+      border-color: var(--primary);
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--primary);
+    }
+
+    .size-option strong {
+      display: block;
+      color: var(--primary);
+      font-family: Georgia, serif;
+      font-size: 1.12rem;
+    }
+
+    .size-option span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .progress-wrap { margin: 0 0 14px; }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .progress {
+      height: 8px;
+      background: var(--surface-warm);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--secondary);
+      transition: width 0.25s, background-color 0.25s;
+    }
+
+    .counter-list { display: grid; gap: 4px; }
+
+    .counter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      padding: 9px 0;
+    }
+
+    .counter-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .mini-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .counter-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .counter-controls button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .counter-controls button:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .counter-controls button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .count {
+      font-weight: 700;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .builder-side {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .builder-side h3 {
+      font-family: Georgia, serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      color: var(--ink);
+      margin: 0 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--ink);
+    }
+
+    .check-item input, .radio-stack input {
+      accent-color: var(--secondary);
+      width: 16px;
+      height: 16px;
+    }
+
+    .input, .select-field {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--ink);
+      outline: none;
+      margin: 2px 0 12px;
+      font-size: 0.9rem;
+    }
+
+    .input:focus, .select-field:focus {
+      border-color: var(--secondary);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .radio-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 4px 0 14px;
+    }
+
+    .radio-stack label {
+      font-size: 0.84rem;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Métodos de pago y Tarjeta */
+    .pay-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .pay-method-btn {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 4px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .pay-method-btn.active {
+      border-color: var(--secondary);
+      background: var(--secondary);
+      color: #FFFDF9;
+    }
+
+    .card-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    /* Vista previa de tarjeta física */
+    .virtual-card {
+      background: linear-gradient(135deg, #1E2823 0%, #2C3E35 60%, #17201C 100%);
+      color: #F7F1E5;
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      font-family: "Courier New", Courier, monospace;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .vc-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #D9C398;
+      margin-bottom: 16px;
+    }
+
+    .vc-chip {
+      width: 34px;
+      height: 24px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #E2C27D, #B58C3E);
+      margin-bottom: 12px;
+    }
+
+    .vc-number {
+      font-size: 1.08rem;
+      letter-spacing: 0.14em;
+      margin-bottom: 14px;
+      font-weight: 700;
+      word-spacing: 4px;
+    }
+
+    .vc-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(247, 241, 229, 0.85);
+    }
+
+    .card-helper-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .link-btn {
+      background: none;
+      border: 0;
+      padding: 0;
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .fiscal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .transfer-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--secondary);
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+    }
+
+    .promo-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: -6px 0 12px;
+    }
+
+    .summary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px;
+      margin: 14px 0;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.85rem;
+      margin: 4px 0;
+      color: var(--muted);
+    }
+
+    .summary-line strong { color: var(--ink); }
+
+    .summary-total {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 8px;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .summary-total strong { color: var(--primary); }
+    .discount, .discount strong { color: var(--secondary); font-weight: 700; }
+
+    .checkout-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .full { width: 100%; }
+    .hint { font-size: 0.75rem; color: var(--muted); margin: 8px 0 0; }
+
+    /* Modal de Recibo Oficial y Corte de Caja */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(20, 16, 13, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      background: #FFFFFF;
+      color: #1A1816;
+      width: min(580px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 6px;
+      border: 1px solid #D8CFC2;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      padding: 26px;
+      position: relative;
+    }
+
+    .receipt-sheet {
+      border: 1px solid #DCD4C8;
+      padding: 22px;
+      background: #FFFDFB;
+      font-size: 0.85rem;
+      color: #1A1816;
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid #1F1A16;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .receipt-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .receipt-logo-box {
+      width: 62px;
+      height: 62px;
+      border: 1px solid #E2D8C9;
+      background: #FAF5EC;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex: none;
+    }
+
+    .receipt-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .receipt-logo-fallback {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: #B83B1E;
+      text-align: center;
+    }
+
+    .receipt-company h4 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      color: #1F1A16;
+    }
+
+    .receipt-company p {
+      margin: 2px 0;
+      font-size: 0.75rem;
+      color: #544B42;
+      line-height: 1.35;
+    }
+
+    .receipt-badge {
+      text-align: right;
+      flex: none;
+    }
+
+    .receipt-status {
+      display: inline-block;
+      background: #1C4E38;
+      color: #FFFFFF;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .receipt-folio {
+      display: block;
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+      font-size: 0.84rem;
+      margin-top: 6px;
+      color: #B83B1E;
+    }
+
+    .receipt-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      background: #F7F2EA;
+      border: 1px solid #E5DDD0;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .receipt-meta-grid div strong {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6B6055;
+    }
+
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+    }
+
+    .receipt-table th {
+      text-align: left;
+      border-bottom: 1.5px solid #1F1A16;
+      padding: 6px 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #544B42;
+    }
+
+    .receipt-table td {
+      padding: 8px 4px;
+      border-bottom: 1px solid #E8E0D4;
+      vertical-align: top;
+    }
+
+    .receipt-table .num { text-align: right; white-space: nowrap; }
+
+    .receipt-totals {
+      margin-left: auto;
+      width: min(270px, 100%);
+      font-size: 0.82rem;
+    }
+
+    .receipt-totals div {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+    }
+
+    .receipt-totals .grand {
+      border-top: 2px solid #1F1A16;
+      margin-top: 6px;
+      padding-top: 7px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #B83B1E;
+    }
+
+    .receipt-words {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed #CFC5B6;
+      font-size: 0.72rem;
+      color: #544B42;
+      text-transform: uppercase;
+    }
+
+    .receipt-footer-note {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #6B6055;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    /* Tabla de Corte de Caja */
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin: 12px 0;
+    }
+
+    .ledger-table th, .ledger-table td {
+      border-bottom: 1px solid #E4DDD2;
+      padding: 8px 6px;
+      text-align: left;
+    }
+
+    .ledger-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: #F7F2EA;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .ledger-summary div strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      color: var(--secondary);
+    }
+
+    /* Galería */
+    .gallery-section { background: var(--surface); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 0.8fr 0.85fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .gallery-grid figure { margin: 0; }
+
+    .gallery-main {
+      position: relative;
+      min-height: 310px;
+      overflow: hidden;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .gallery-main img {
+      width: 100%;
+      height: 100%;
+      min-height: 310px;
+      object-fit: cover;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gallery-main figcaption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      padding: 26px 20px 16px;
+      background: linear-gradient(transparent, rgba(20, 17, 14, 0.72));
+      color: #FFFDF9;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 1.25rem;
+    }
+
+    .gallery-note {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .gallery-mark {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 3.2rem;
+      line-height: 1;
+      color: var(--primary);
+    }
+
+    .gallery-note p {
+      font-family: Georgia, serif;
+      font-size: 1.45rem;
+      line-height: 1.15;
+      margin: 14px 0;
+      color: var(--ink);
+    }
+
+    .gallery-note small {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .gallery-extra {
+      position: relative;
+      min-height: 240px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 22px;
+      color: var(--muted);
+    }
+
+    .gallery-extra img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 2;
+    }
+
+    .gallery-extra b {
+      font-family: Georgia, serif;
+      font-weight: 500;
+      font-size: 1.15rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    /* Redes */
+    .social-section {
+      padding: 60px 0;
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .social-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .social-layout h2 {
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      line-height: 1.05;
+      margin: 0 0 12px;
+      color: var(--ink);
+    }
+
+    .social-layout p {
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0;
+    }
+
+    .social-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .social-cards a {
+      position: relative;
+      min-height: 128px;
+      padding: 18px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .social-cards a:hover { border-color: var(--primary); }
+    .social-cards b { font-family: Georgia, serif; font-weight: 600; font-size: 1.1rem; }
+    .social-cards small { font-size: 0.72rem; color: var(--muted); }
+    .social-cards i { position: absolute; right: 12px; top: 12px; font-style: normal; color: var(--secondary); font-weight: 700; }
+
+    /* Equipo */
+    .team-section { background: var(--surface); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .team-card {
+      background: var(--bg);
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .team-photo {
+      height: 190px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      background: var(--surface-alt);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 14px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .team-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 2;
+    }
+
+    .team-name {
+      display: block;
+      text-align: center;
+      padding: 10px 4px 2px;
+      color: var(--ink);
+      font-family: Georgia, serif;
+      font-size: 0.96rem;
+      outline: none;
+      cursor: text;
+    }
+
+    .team-name:focus {
+      box-shadow: 0 2px 0 var(--primary);
+    }
+
+    .team-note {
+      font-size: 0.8rem;
+      text-align: center;
+      color: var(--muted);
+      margin: 20px 0 0;
+    }
+
+    /* Alérgenos */
+    .allergens {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .allergen-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .allergen {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .allergen strong {
+      display: block;
+      font-family: Georgia, serif;
+      color: var(--ink);
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .allergen small { color: var(--muted); font-size: 0.82rem; }
+
+    .warning {
+      margin: 22px auto 0;
+      max-width: 820px;
+      padding: 15px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* Ubicación */
+    .location { background: var(--surface); }
+
+    .location-card {
+      background: var(--secondary);
+      color: #FFFDF9;
+      border-radius: var(--radius);
+      padding: clamp(24px, 5vw, 44px);
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 28px;
+      transition: background-color var(--transition);
+    }
+
+    .location-card h2 {
+      color: #FFFDF9;
+      margin: 0 0 12px;
+    }
+
+    .location-card p {
+      color: rgba(255, 253, 249, 0.88);
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .location-qr {
+      padding: 18px;
+      background: #FFFDF9;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-radius: var(--radius);
+      justify-self: end;
+      max-width: 360px;
+    }
+
+    .location-qr img {
+      width: 108px;
+      height: 108px;
+      object-fit: contain;
+      padding: 4px;
+      border: 1px solid var(--border);
+      flex: none;
+    }
+
+    .location-qr strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .location-qr small {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    footer {
+      background: #1B241E;
+      color: #F4ECE0;
+      padding: 40px 0 24px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      width: 170px;
+      max-height: 70px;
+      object-fit: contain;
+      object-position: left center;
+      background: #FAF5EC;
+      padding: 7px 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .socials {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .socials a {
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 0.84rem;
+      transition: border-color 0.2s;
+    }
+
+    .socials a:hover { border-color: #E7C687; }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: #D8CBB8;
+    }
+
+    .copyright {
+      font-size: 0.75rem;
+      color: #AFA290;
+      margin-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 16px;
+    }
+
+    /* Botón flotante WhatsApp y Toast */
+    .wa-float {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 40;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: #1E7E48;
+      color: #FFFFFF;
+      font-size: 0.84rem;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 16px);
+      background: #1F1A16;
+      color: #FFFFFF;
+      padding: 11px 18px;
+      border-radius: 4px;
+      font-size: 0.86rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s;
+      z-index: 80;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* Impresión directa del recibo sin páginas en blanco */
+    @media print {
+      @page { size: auto; margin: 12mm; }
+      body > *:not(#receiptModal) { display: none !important; }
+      #receiptModal {
+        position: static !important;
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .modal-panel {
+        box-shadow: none !important;
+        border: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        width: 100% !important;
+        padding: 0 !important;
+      }
+      .no-print { display: none !important; }
+    }
+
+    @media (max-width: 920px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+      .hero-media { order: -1; }
+      .hero-frame img { max-height: 340px; }
+      .index-grid { grid-template-columns: repeat(3, 1fr); }
+      .flavor-grid { grid-template-columns: repeat(2, 1fr); }
+      .builder-layout { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 24px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-main { grid-column: 1 / -1; }
+      .social-layout { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(3, 1fr); }
+      .location-card { grid-template-columns: 1fr; }
+      .location-qr { justify-self: start; }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(100% - 28px, 540px); }
+      .mobile-menu { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 74px;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        padding: 16px 22px 20px;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-cta { display: none; }
+      .hero { padding: 28px 0 40px; }
+      .hero-frame img { max-height: 270px; }
+      .hero-stamp { width: 88px; height: 88px; font-size: 0.66rem; right: 4px; bottom: -10px; }
+      .index-grid { grid-template-columns: repeat(2, 1fr); }
+      .promo-inner { flex-wrap: wrap; }
+      .promo-seal { width: 84px; height: 84px; margin-left: auto; }
+      .promo-inner .btn { width: 100%; }
+      .about-attributes { grid-template-columns: 1fr; }
+      .check-grid, .radio-stack, .two-col, .modal-actions { grid-template-columns: 1fr; }
+      .receipt-meta-grid { grid-template-columns: 1fr; }
+      .receipt-header { flex-direction: column; }
+      .receipt-badge { text-align: left; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-main, .gallery-main img { min-height: 230px; }
+      .social-cards { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .allergen-grid { grid-template-columns: repeat(2, 1fr); }
+      .location-qr { flex-direction: column; text-align: center; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="craft-border"></div>
+
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <div class="season-status">
+        <span class="season-dot" aria-hidden="true"></span>
+        <span id="seasonBarText">HECHO CON SABOR Y TRADICIÓN · TIZIMÍN, YUCATÁN</span>
+      </div>
+      <div class="season-switcher">
+        <label for="seasonPreview">Vista por temporada:</label>
+        <select id="seasonPreview" aria-label="Seleccionar vista por temporada">
+          <option value="auto">Automática (fecha actual)</option>
+          <option value="base">Clásica · Artesanal</option>
+          <option value="navidad">Navidad</option>
+          <option value="newyear">Año Nuevo</option>
+          <option value="sanvalentin">San Valentín</option>
+          <option value="verano">Verano</option>
+          <option value="halloween">Otoño / Hanal Pixán</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a class="brand" href="#inicio" aria-label="MEXIBALLS, inicio">
+        <img class="logo-image" data-auto-img="logo" alt="Logotipo de MEXIBALLS">
+        <span class="brand-word">MEXIBALLS</span>
+      </a>
+      <button class="mobile-menu" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#nosotros">Historia</a>
+        <a href="#sabores">Menú</a>
+        <a href="#armador">Armar y Pagar</a>
+        <a href="#galeria">Galería</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#ubicacion">Ubicación</a>
+      </nav>
+      <a class="btn btn-primary btn-small nav-cta" href="#armador">Pedir y Pagar ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div>
+          <div class="season-pill">
+            <span id="seasonTag">Temporada</span> · <strong id="seasonMessage">Una temporada para compartir</strong>
+          </div>
+          <span class="eyebrow">Cocina artesanal · Tizimín, Yucatán</span>
+          <h1 class="display">Pequeñas<br><span>bolitas,</span><br>gran sabor.</h1>
+          <p class="tagline script">El corazón de Yucatán en cada bocado.</p>
+          <p class="hero-copy">Masa suave de harina de trigo dorada en plancha, crujiente por fuera y rellena con guisos tradicionales de México. Preparadas al momento para compartir.</p>
+          <div class="offer-strip">Promoción de bienvenida: 2×1 en tu primera compra</div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#armador">Arma tu caja y paga</a>
+            <a class="btn btn-outline" href="#sabores">Explorar sabores</a>
+          </div>
+        </div>
+
+        <div class="hero-media">
+          <div class="hero-frame">
+            <img data-auto-img="hero" alt="Bolitas doradas MEXIBALLS con salsas de la casa">
+          </div>
+          <div class="hero-stamp" id="heroStamp">SABOR<br>ARTESANAL<br>YUCATÁN</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-index" aria-label="Explora nuestros sabores">
+      <div class="container">
+        <div class="index-head">
+          <span>Especialidades de la casa</span>
+          <a href="#sabores">Ver carta completa ↗</a>
+        </div>
+        <div class="index-grid">
+          <a href="#sabores" class="index-item"><b>Pastor</b><span>Cerdo y piña</span></a>
+          <a href="#sabores" class="index-item"><b>Esquites</b><span>Elote y cotija</span></a>
+          <a href="#sabores" class="index-item"><b>Costa</b><span>Camarón y queso</span></a>
+          <a href="#sabores" class="index-item"><b>Hongos</b><span>Al ajillo</span></a>
+          <a href="#armador" class="index-item"><b>Tu caja</b><span>6 o 12 pzas</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="promo-band" id="promociones">
+      <div class="container promo-inner">
+        <div>
+          <span class="promo-kicker">Antojo para compartir</span>
+          <h2>Tu primera mordida <em>tiene premio.</em></h2>
+          <p>Aplica el código <strong>2X1PRIMERA</strong> en tu pedido y disfruta nuestra promoción de bienvenida.</p>
+        </div>
+        <div class="promo-seal">
+          <strong>2×1</strong>
+          <span>PRIMERA<br>COMPRA</span>
+        </div>
+        <button class="btn btn-primary" id="applyWelcomePromo" type="button">Aplicar promo 2×1 ↗</button>
+      </div>
+    </section>
+
+    <section class="section about" id="nosotros">
+      <div class="container about-grid">
+        <div class="about-card">
+          <strong>Tradición en forma de bocado.</strong>
+          <span>Una propuesta artesanal nacida en Tizimín, Yucatán.</span>
+        </div>
+        <div class="about-text">
+          <span class="section-kicker">Nuestra esencia</span>
+          <h2 class="display">Con raíces mexicanas y corazón yucateco.</h2>
+          <p>MEXIBALLS nace al unir el formato práctico de las botanas esféricas con los guisos y antojitos de nuestra cocina. Elaboramos bolitas de masa suave de harina de trigo, doradas en plancha y rellenas al momento.</p>
+          <p>A diferencia de las botanas empanizadas o fritas en exceso, su encanto está en la textura ligera de la plancha: doradas por fuera, tiernas por dentro y acompañadas con salsas de la casa.</p>
+          <div class="about-attributes">
+            <div class="attr-item"><strong>Al momento</strong><small>Preparación fresca por orden</small></div>
+            <div class="attr-item"><strong>En plancha</strong><small>Sin empanizado pesado</small></div>
+            <div class="attr-item"><strong>Receta local</strong><small>Salsas hechas en casa</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section menu-section" id="sabores">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">Carta de sabores</span>
+          <h2 class="display">Nuestras cuatro especialidades</h2>
+          <p>Combínalas libremente en orden individual de 6 piezas o paquete reunión de 12 piezas.</p>
+          <div class="menu-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="flavorSearch" type="search" placeholder="Buscar por sabor o ingrediente (ej. piña, camarón)..." aria-label="Buscar sabor">
+          </div>
+        </div>
+
+        <div class="flavor-grid" id="flavorGrid">
+          <article class="flavor-card">
+            <div class="flavor-top pastor">
+              <div class="flavor-fallback"><span>Especialidad 01</span><b>Pastor</b></div>
+              <img data-auto-img="pastor" alt="MEXIBALLS sabor Pastor">
+            </div>
+            <div class="flavor-body">
+              <h3>Pastor</h3>
+              <p>Carne de cerdo marinada al pastor con piña asada, cebolla, cilantro y salsa de la casa.</p>
+              <div class="flavor-foot">
+                <small>Clásico con toque tropical</small>
+                <button class="btn btn-primary btn-small add-flavor" type="button" data-flavor="pastor">Agregar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="flavor-card">
+            <div class="flavor-top esquites">
+              <div class="flavor-fallback"><span>Especialidad 02</span><b>Esquites</b></div>
+              <img data-auto-img="esquites" alt="MEXIBALLS sabor Esquites">
+            </div>
+            <div class="flavor-body">
+              <h3>Esquites</h3>
+              <p>Granos de elote tierno salteados con epazote, crema, queso cotija y chile en polvo.</p>
+              <div class="flavor-foot">
+                <small>Cremoso y tradicional</small>
+                <button class="btn btn-primary btn-small add-flavor" type="button" data-flavor="esquites">Agregar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="flavor-card">
+            <div class="flavor-top costa">
+              <div class="flavor-fallback"><span>Especialidad 03</span><b>Costa</b></div>
+              <img data-auto-img="costa" alt="MEXIBALLS sabor Costa">
+            </div>
+            <div class="flavor-body">
+              <h3>Costa</h3>
+              <p>Camarón sazonado a la plancha con queso fundido y aderezo cremoso de chipotle.</p>
+              <div class="flavor-foot">
+                <small>Sabor de mar</small>
+                <button class="btn btn-primary btn-small add-flavor" type="button" data-flavor="costa">Agregar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="flavor-card">
+            <div class="flavor-top hongos">
+              <div class="flavor-fallback"><span>Especialidad 04</span><b>Hongos</b></div>
+              <img data-auto-img="hongos" alt="MEXIBALLS sabor Hongos">
+            </div>
+            <div class="flavor-body">
+              <h3>Hongos</h3>
+              <p>Champiñones salteados al ajillo con queso fundido y hierbas aromáticas.</p>
+              <div class="flavor-foot">
+                <small>Aromático y suave</small>
+                <button class="btn btn-primary btn-small add-flavor" type="button" data-flavor="hongos">Agregar</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="empty-search" id="emptySearch" hidden>
+          No encontramos sabores con ese término. <button class="btn btn-outline btn-small" id="clearSearch" type="button" style="margin-left:8px">Ver todos</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section builder" id="armador">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">Pedido y Cobro en Línea</span>
+          <h2 class="display">Arma tu caja y realiza tu pago</h2>
+          <p>Elige tus sabores, selecciona tu método de pago con tarjeta o transferencia y genera tu recibo al instante.</p>
+        </div>
+
+        <div class="builder-toolbar">
+          <button class="btn btn-outline btn-small" id="openLedgerBtn" type="button">Corte y cuadre de ventas (<span id="salesCountBadge">0</span>)</button>
+        </div>
+
+        <div class="builder-card">
+          <div class="builder-layout">
+            <!-- COLUMNA IZQUIERDA: CONFIGURACIÓN DEL PRODUCTO -->
+            <div>
+              <div class="step-block">
+                <label class="field-label">1. Elige la presentación</label>
+                <div class="size-options" id="sizeOptions">
+                  <button class="size-option active" type="button" data-size="individual">
+                    <strong>6 piezas · $70.00</strong>
+                    <span>Orden Individual (IVA incl.)</span>
+                  </button>
+                  <button class="size-option" type="button" data-size="reunion">
+                    <strong>12 piezas · $125.00</strong>
+                    <span>Paquete Reunión (IVA incl.)</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="step-block">
+                <div class="progress-wrap">
+                  <div class="progress-meta">
+                    <span>2. Distribuye tus sabores</span>
+                    <span id="progressText">0 de 6 piezas</span>
+                  </div>
+                  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+                </div>
+
+                <div class="counter-list" id="counterList">
+                  <div class="counter-row">
+                    <span class="counter-name"><i class="mini-dot" style="background:#B83B1E"></i>Pastor</span>
+                    <div class="counter-controls">
+                      <button type="button" data-action="minus" data-flavor="pastor" aria-label="Quitar Pastor">−</button>
+                      <span class="count" id="count-pastor">0</span>
+                      <button type="button" data-action="plus" data-flavor="pastor" aria-label="Agregar Pastor">+</button>
+                    </div>
+                  </div>
+                  <div class="counter-row">
+                    <span class="counter-name"><i class="mini-dot" style="background:#5E9446"></i>Esquites</span>
+                    <div class="counter-controls">
+                      <button type="button" data-action="minus" data-flavor="esquites" aria-label="Quitar Esquites">−</button>
+                      <span class="count" id="count-esquites">0</span>
+                      <button type="button" data-action="plus" data-flavor="esquites" aria-label="Agregar Esquites">+</button>
+                    </div>
+                  </div>
+                  <div class="counter-row">
+                    <span class="counter-name"><i class="mini-dot" style="background:#397C9A"></i>Costa</span>
+                    <div class="counter-controls">
+                      <button type="button" data-action="minus" data-flavor="costa" aria-label="Quitar Costa">−</button>
+                      <span class="count" id="count-costa">0</span>
+                      <button type="button" data-action="plus" data-flavor="costa" aria-label="Agregar Costa">+</button>
+                    </div>
+                  </div>
+                  <div class="counter-row">
+                    <span class="counter-name"><i class="mini-dot" style="background:#A87C4F"></i>Hongos</span>
+                    <div class="counter-controls">
+                      <button type="button" data-action="minus" data-flavor="hongos" aria-label="Quitar Hongos">−</button>
+                      <span class="count" id="count-hongos">0</span>
+                      <button type="button" data-action="plus" data-flavor="hongos" aria-label="Agregar Hongos">+</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn btn-outline btn-small" id="randomFill" type="button" style="margin-top:14px">Completar caja mixta</button>
+              </div>
+
+              <div class="step-block">
+                <span class="field-label">3. Salsas, toppings y entrega</span>
+                <div class="check-grid">
+                  <label class="check-item"><input type="checkbox" name="topping" value="Chipotle cremoso" checked> Chipotle cremoso</label>
+                  <label class="check-item"><input type="checkbox" name="topping" value="Habanero de la casa"> Habanero de la casa</label>
+                  <label class="check-item"><input type="checkbox" name="topping" value="Salsa verde"> Salsa verde</label>
+                  <label class="check-item"><input type="checkbox" name="topping" value="Crema"> Crema</label>
+                </div>
+
+                <div class="radio-stack">
+                  <label><input type="radio" name="delivery" value="Recoger en punto de venta" checked> Recoger en tienda</label>
+                  <label><input type="radio" name="delivery" value="Servicio a domicilio"> Envío a domicilio</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: FACTURACIÓN, PAGO CON TARJETA Y CUADRE -->
+            <aside class="builder-side" id="pago">
+              <h3>4. Facturación y Pago</h3>
+
+              <label class="field-label" for="customerName">Nombre del cliente *</label>
+              <input class="input" id="customerName" type="text" placeholder="Nombre completo del cliente">
+
+              <div class="two-col">
+                <div>
+                  <label class="field-label" for="invoiceType">Tipo de factura</label>
+                  <select class="select-field" id="invoiceType">
+                    <option value="Nota de Venta (Público en General)">Nota de Venta (Público en General)</option>
+                    <option value="Factura Fiscal CFDI 4.0 (Ingreso)">Factura Fiscal CFDI 4.0 (Ingreso)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label" for="promo">Código promocional</label>
+                  <input class="input" id="promo" type="text" placeholder="2X1PRIMERA o MEXI10" autocomplete="off">
+                </div>
+              </div>
+
+              <!-- Datos fiscales opcionales cuando elige Factura CFDI 4.0 -->
+              <div class="fiscal-box" id="fiscalFields" hidden>
+                <div class="two-col">
+                  <div>
+                    <label class="field-label" for="clientRfc">RFC del cliente *</label>
+                    <input class="input" id="clientRfc" type="text" maxlength="13" placeholder="Ej. XAXX010101000" style="text-transform:uppercase">
+                  </div>
+                  <div>
+                    <label class="field-label" for="cfdiUse">Uso de CFDI</label>
+                    <select class="select-field" id="cfdiUse">
+                      <option value="G03 - Gastos en general">G03 - Gastos en general</option>
+                      <option value="S01 - Sin efectos fiscales">S01 - Sin efectos fiscales</option>
+                      <option value="P01 - Por definir">P01 - Por definir</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <span class="field-label">Método de pago</span>
+              <div class="pay-methods" id="payMethods">
+                <button type="button" class="pay-method-btn active" data-method="Tarjeta">Tarjeta Crédito/Débito</button>
+                <button type="button" class="pay-method-btn" data-method="Transferencia SPEI">Transferencia SPEI</button>
+                <button type="button" class="pay-method-btn" data-method="Efectivo">Efectivo</button>
+              </div>
+
+              <!-- SECCIÓN FUNCIONAL DE PAGO CON TARJETA -->
+              <div class="card-box" id="cardSection">
+                <div class="card-helper-row">
+                  <span style="font-size:0.78rem;font-weight:700;color:var(--secondary)">Datos de la tarjeta</span>
+                  <button type="button" class="link-btn" id="fillDemoCard">Usar tarjeta de prueba</button>
+                </div>
+
+                <div class="virtual-card" aria-hidden="true">
+                  <div class="vc-top">
+                    <span id="vcTypeLabel">TARJETA BANCARIA</span>
+                    <span id="vcBrandLabel">VISA / MC</span>
+                  </div>
+                  <div class="vc-chip"></div>
+                  <div class="vc-number" id="vcNumberDisplay">•••• •••• •••• ••••</div>
+                  <div class="vc-bottom">
+                    <span id="vcHolderDisplay">TITULAR DE LA TARJETA</span>
+                    <span id="vcExpDisplay">MM/AA</span>
+                  </div>
+                </div>
+
+                <label class="field-label" for="cardNumber">Número de tarjeta *</label>
+                <input class="input" id="cardNumber" type="text" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="cc-number">
+
+                <div class="two-col">
+                  <div>
+                    <label class="field-label" for="cardHolder">Nombre en la tarjeta *</label>
+                    <input class="input" id="cardHolder" type="text" placeholder="Como aparece en el plástico" autocomplete="cc-name">
+                  </div>
+                  <div>
+                    <label class="field-label" for="cardKind">Tipo de tarjeta</label>
+                    <select class="select-field" id="cardKind">
+                      <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                      <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="two-col">
+                  <div>
+                    <label class="field-label" for="cardExpiry">Vencimiento (MM/AA) *</label>
+                    <input class="input" id="cardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp">
+                  </div>
+                  <div>
+                    <label class="field-label" for="cardCvv">Código CVV *</label>
+                    <input class="input" id="cardCvv" type="password" inputmode="numeric" maxlength="4" placeholder="123" autocomplete="cc-csc">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Info para Transferencia -->
+              <div class="transfer-info" id="transferSection" hidden>
+                <strong>Datos para Transferencia SPEI:</strong><br>
+                Beneficiario: <strong>MEXIBALLS ARTESANAL YUCATÁN</strong><br>
+                CLABE: <strong>0129 1001 5489 2034 18</strong> · Concepto: Tu nombre
+              </div>
+
+              <!-- Info para Efectivo -->
+              <div class="transfer-info" id="cashSection" hidden>
+                <strong>Pago en Efectivo:</strong><br>
+                Liquida el monto exacto al recoger en punto de venta o al recibir tu pedido a domicilio.
+              </div>
+
+              <!-- Resumen financiero cuadrado al centavo -->
+              <div class="summary" aria-live="polite">
+                <div class="summary-line"><span>Subtotal (<span id="summaryPieces">6</span> piezas)</span><strong id="subtotal">$70.00</strong></div>
+                <div class="summary-line discount" id="discountLine" hidden><span id="discountLabel">Descuento</span><strong id="discountAmount">-$0.00</strong></div>
+                <div class="summary-line"><span>Base gravable (sin IVA)</span><strong id="taxBase">$60.34</strong></div>
+                <div class="summary-line"><span>IVA Trasladado (16%)</span><strong id="taxIva">$9.66</strong></div>
+                <div class="summary-line summary-total"><span>Total a pagar (MXN)</span><strong id="total">$70.00 MXN</strong></div>
+                <div class="hint" id="promoStatus">Ingresa un código para validar tu promoción.</div>
+              </div>
+
+              <div class="checkout-actions">
+                <button class="btn btn-primary full" id="processPaymentBtn" type="button">Pagar y Generar Recibo</button>
+                <button class="btn btn-secondary full" id="sendOrder" type="button">Enviar pedido por WhatsApp ↗</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-section" id="galeria">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">De nuestra plancha</span>
+          <h2 class="display">Hechos para disfrutarse</h2>
+          <p>Dorado artesanal, rellenos calientes y salsas preparadas cada día.</p>
+        </div>
+        <div class="gallery-grid">
+          <figure class="gallery-main">
+            <img data-auto-img="hero" alt="MEXIBALLS doraditas servidas en plato">
+            <figcaption>Pequeños bocados, grandes momentos.</figcaption>
+          </figure>
+          <div class="gallery-note">
+            <span class="gallery-mark">M.</span>
+            <p>El sabor también entra por los ojos.</p>
+            <small>Preparadas al instante en Tizimín, Yucatán.</small>
+          </div>
+          <div class="gallery-extra">
+            <b>Cocina en vivo</b>
+            <small>Cada orden sale recién dorada de la plancha.</small>
+            <img data-auto-img="galeria-2" alt="Preparación artesanal de MEXIBALLS">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="social-section" id="redes">
+      <div class="container social-layout">
+        <div>
+          <span class="section-kicker">Comunidad MEXIBALLS</span>
+          <h2 class="display">El antojo también vive en redes.</h2>
+          <p>Entérate de promociones de temporada, horarios especiales y nuevos sabores.</p>
+        </div>
+        <div class="social-cards">
+          <a data-instagram-link href="https://www.instagram.com/mexiballs.tizimin/" target="_blank" rel="noopener">
+            <i>↗</i>
+            <b>Instagram</b>
+            <small>@mexiballs.tizimin</small>
+          </a>
+          <a data-tiktok-link href="https://www.tiktok.com/@mexiballs.tizimin" target="_blank" rel="noopener">
+            <i>↗</i>
+            <b>TikTok</b>
+            <small>@mexiballs.tizimin</small>
+          </a>
+          <a data-facebook-link href="https://www.facebook.com/search/top?q=MEXIBALLS%20Tizim%C3%ADn" target="_blank" rel="noopener">
+            <i>↗</i>
+            <b>Facebook</b>
+            <small>MEXIBALLS Tizimín</small>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section team-section" id="equipo">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">Detrás de cada orden</span>
+          <h2 class="display">Nuestro equipo</h2>
+          <p>Las manos e ideas que dan vida a MEXIBALLS en Tizimín.</p>
+        </div>
+        <div class="team-grid">
+          <article class="team-card">
+            <div class="team-photo"><span>MEXIBALLS</span><img data-auto-img="integrante-1" alt="Integrante 1 del equipo"></div>
+            <strong class="team-name" data-team-id="1" contenteditable="true" spellcheck="false">Integrante 1</strong>
+          </article>
+          <article class="team-card">
+            <div class="team-photo"><span>MEXIBALLS</span><img data-auto-img="integrante-2" alt="Integrante 2 del equipo"></div>
+            <strong class="team-name" data-team-id="2" contenteditable="true" spellcheck="false">Integrante 2</strong>
+          </article>
+          <article class="team-card">
+            <div class="team-photo"><span>MEXIBALLS</span><img data-auto-img="integrante-3" alt="Integrante 3 del equipo"></div>
+            <strong class="team-name" data-team-id="3" contenteditable="true" spellcheck="false">Integrante 3</strong>
+          </article>
+          <article class="team-card">
+            <div class="team-photo"><span>MEXIBALLS</span><img data-auto-img="integrante-4" alt="Integrante 4 del equipo"></div>
+            <strong class="team-name" data-team-id="4" contenteditable="true" spellcheck="false">Integrante 4</strong>
+          </article>
+          <article class="team-card">
+            <div class="team-photo"><span>MEXIBALLS</span><img data-auto-img="integrante-5" alt="Integrante 5 del equipo"></div>
+            <strong class="team-name" data-team-id="5" contenteditable="true" spellcheck="false">Integrante 5</strong>
+          </article>
+        </div>
+        <p class="team-note">Haz clic sobre cualquier nombre para editarlo; se guardará automáticamente en este navegador.</p>
+      </div>
+    </section>
+
+    <section class="section allergens" id="alergenos">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">Transparencia alimentaria</span>
+          <h2 class="display">Información sobre alérgenos</h2>
+          <p>Consulta los ingredientes presentes en nuestras preparaciones antes de ordenar.</p>
+        </div>
+        <div class="allergen-grid">
+          <div class="allergen"><strong>Gluten</strong><small>Masa elaborada con harina de trigo</small></div>
+          <div class="allergen"><strong>Lácteos</strong><small>Queso fundido, queso cotija y crema</small></div>
+          <div class="allergen"><strong>Huevo</strong><small>Presente en la preparación de masa y aderezos</small></div>
+          <div class="allergen"><strong>Crustáceos</strong><small>Camarón en la variedad Costa</small></div>
+        </div>
+        <div class="warning"><strong>Aviso importante:</strong> Nuestros productos se elaboran en una misma área de cocina, por lo que existe riesgo de contaminación cruzada. Si tienes alguna alergia o restricción alimentaria, infórmanos antes de confirmar tu pedido.</div>
+      </div>
+    </section>
+
+    <section class="section location" id="ubicacion">
+      <div class="container">
+        <div class="location-card">
+          <div>
+            <span class="section-kicker" style="color:#E7C687">Punto de venta</span>
+            <h2 class="display">Nos vemos en Tizimín</h2>
+            <p id="addressText">Calle 69 #287 x 44A y 65, Col. Santo Domingo, Tizimín, Yucatán, México.</p>
+            <p id="hoursText">Horario: Martes a domingo de 5:00 p. m. a 10:00 p. m. (Lunes cerrado).</p>
+            <p>Escríbenos por WhatsApp para apartar tu orden o consultar envío a domicilio.</p>
+            <a class="btn btn-primary" style="margin-top:16px" href="https://wa.me/5219862171530" data-whatsapp-link target="_blank" rel="noopener">Contactar por WhatsApp ↗</a>
+          </div>
+          <div class="location-qr">
+            <img id="whatsappQr" alt="Código QR para pedir por WhatsApp">
+            <div>
+              <strong>Ordena desde tu celular</strong>
+              <small>Escanea el código o escríbenos al 986 217 1530</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <img class="footer-logo" data-auto-img="logo" alt="Logotipo MEXIBALLS">
+          <div class="script" style="font-size:1.15rem;color:#E7C687">El corazón de Yucatán en cada bocado.</div>
+        </div>
+        <div class="socials">
+          <a data-instagram-link href="https://www.instagram.com/mexiballs.tizimin/" target="_blank" rel="noopener">Instagram ↗</a>
+          <a data-tiktok-link href="https://www.tiktok.com/@mexiballs.tizimin" target="_blank" rel="noopener">TikTok ↗</a>
+          <a data-facebook-link href="https://www.facebook.com/search/top?q=MEXIBALLS%20Tizim%C3%ADn" target="_blank" rel="noopener">Facebook ↗</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#nosotros">Historia</a>
+        <a href="#sabores">Menú</a>
+        <a href="#armador">Arma tu caja</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#alergenos">Alérgenos</a>
+      </div>
+      <div class="copyright">© <span id="year"></span> MEXIBALLS · Tizimín, Yucatán, México.</div>
+    </div>
+  </footer>
+
+  <!-- MODAL: RECIBO OFICIAL DE PAGO -->
+  <div class="modal-backdrop" id="receiptModal" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+    <div class="modal-panel">
+      <div class="receipt-sheet" id="receiptPrintable">
+        <div class="receipt-header">
+          <div class="receipt-brand">
+            <div class="receipt-logo-box">
+              <img data-auto-img="logo" alt="Logo MEXIBALLS">
+              <span class="receipt-logo-fallback" id="receiptLogoFallback">MEXI<br>BALLS</span>
+            </div>
+            <div class="receipt-company">
+              <h4 id="receiptTitle">MEXIBALLS</h4>
+              <p id="recCompanyName">MEXIBALLS ARTESANAL YUCATÁN</p>
+              <p><strong>RFC:</strong> <span id="recCompanyRfc">MEX260829YZ4</span></p>
+              <p id="recCompanyAddress">Calle 69 #287 x 44A y 65, Col. Santo Domingo, C.P. 97700, Tizimín, Yucatán.</p>
+              <p id="recCompanyPhone">Tel. 986 217 1530 · Régimen General de Ley</p>
+            </div>
+          </div>
+          <div class="receipt-badge">
+            <span class="receipt-status">PAGO APROBADO</span>
+            <span class="receipt-folio" id="recFolio">FOLIO: MB-0001</span>
+            <div style="font-size:0.72rem;color:#544B42;margin-top:4px" id="recDate">Fecha: --/--/----</div>
+          </div>
+        </div>
+
+        <div class="receipt-meta-grid">
+          <div>
+            <strong>Cliente</strong>
+            <span id="recClientName">-</span>
+          </div>
+          <div>
+            <strong>Tipo de Factura</strong>
+            <span id="recInvoiceType">-</span>
+          </div>
+          <div>
+            <strong>RFC Receptor / Uso CFDI</strong>
+            <span id="recClientRfc">XAXX010101000 · S01</span>
+          </div>
+          <div>
+            <strong>Método de Pago</strong>
+            <span id="recPayMethod">-</span>
+          </div>
+          <div>
+            <strong>Modalidad de Entrega</strong>
+            <span id="recDelivery">-</span>
+          </div>
+          <div>
+            <strong>No. Autorización / Ref.</strong>
+            <span id="recAuthCode">-</span>
+          </div>
+        </div>
+
+        <table class="receipt-table">
+          <thead>
+            <tr>
+              <th>Cant.</th>
+              <th>Descripción del consumo</th>
+              <th class="num">P. Unit.</th>
+              <th class="num">Importe</th>
+            </tr>
+          </thead>
+          <tbody id="recItemsBody"></tbody>
+        </table>
+
+        <div class="receipt-totals">
+          <div><span>Subtotal:</span><span id="recSubtotal">$0.00</span></div>
+          <div id="recDiscountRow" hidden><span>Descuento (<span id="recPromoCode"></span>):</span><span id="recDiscount">-$0.00</span></div>
+          <div><span>Base Gravable (sin IVA):</span><span id="recBase">$0.00</span></div>
+          <div><span>IVA Trasladado (16%):</span><span id="recIva">$0.00</span></div>
+          <div class="grand"><span>TOTAL PAGADO:</span><span id="recTotal">$0.00 MXN</span></div>
+        </div>
+
+        <div class="receipt-words" id="recWords">IMPORTE CON LETRA: CERO PESOS 00/100 M.N.</div>
+        <div class="receipt-footer-note">
+          Este comprobante acredita el pago de su orden en MEXIBALLS.<br>
+          ¡Gracias por apoyar el sabor artesanal de Tizimín, Yucatán!
+        </div>
+      </div>
+
+      <div class="modal-actions no-print">
+        <button class="btn btn-primary" id="downloadPdfBtn" type="button">Descargar PDF</button>
+        <button class="btn btn-outline" id="printReceiptBtn" type="button">Imprimir Recibo</button>
+        <button class="btn btn-secondary" id="whatsappReceiptBtn" type="button">Enviar por WhatsApp ↗</button>
+        <button class="btn btn-outline" id="closeReceiptBtn" type="button">Nueva Orden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CORTE Y CUADRE DE VENTAS -->
+  <div class="modal-backdrop" id="ledgerModal" role="dialog" aria-modal="true" aria-labelledby="ledgerTitle">
+    <div class="modal-panel">
+      <h3 class="display" id="ledgerTitle" style="margin:0 0 6px;font-size:1.5rem">Corte y Cuadre de Ventas</h3>
+      <p style="margin:0 0 14px;font-size:0.84rem;color:var(--muted)">Control contable de órdenes cobradas en este dispositivo.</p>
+
+      <div class="ledger-summary">
+        <div><small style="font-size:0.72rem;color:var(--muted)">Órdenes cobradas</small><strong id="ledCount">0</strong></div>
+        <div><small style="font-size:0.72rem;color:var(--muted)">Piezas vendidas</small><strong id="ledPieces">0</strong></div>
+        <div><small style="font-size:0.72rem;color:var(--muted)">Total cuadrado</small><strong id="ledTotal">$0.00</strong></div>
+      </div>
+
+      <div id="ledBreakdown" style="font-size:0.82rem;margin-bottom:10px;color:var(--ink)"></div>
+
+      <div style="overflow-x:auto">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Folio</th>
+              <th>Cliente</th>
+              <th>Método</th>
+              <th>Factura</th>
+              <th style="text-align:right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline btn-small" id="clearLedgerBtn" type="button">Reiniciar corte</button>
+        <button class="btn btn-primary btn-small" id="closeLedgerBtn" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <a class="wa-float" href="https://wa.me/5219862171530" data-whatsapp-link target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">WhatsApp ↗</a>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    /* ============================================================
+       1. DATOS FISCALES Y DE LA EMPRESA (EDITABLE)
+       ============================================================ */
+    const CONFIG_MEXIBALLS = {
+      brand: "MEXIBALLS",
+      legalName: "MEXIBALLS ARTESANAL YUCATÁN",
+      rfc: "MEX260829YZ4",
+      taxRegime: "Régimen General de Ley Personas Morales",
+      address: "Calle 69 #287 x 44A y 65, Col. Santo Domingo, C.P. 97700, Tizimín, Yucatán, México.",
+      phone: "986 217 1530",
+      whatsapp: "5219862171530",
+      instagram: "https://www.instagram.com/mexiballs.tizimin/",
+      tiktok: "https://www.tiktok.com/@mexiballs.tizimin",
+      facebook: "https://www.facebook.com/search/top?q=MEXIBALLS%20Tizim%C3%ADn",
+      hours: "Horario: Martes a domingo de 5:00 p. m. a 10:00 p. m. (Lunes cerrado)."
+    };
+
+    const WHATSAPP_NUMBER = CONFIG_MEXIBALLS.whatsapp;
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
+    document.querySelectorAll("[data-whatsapp-link]").forEach(link => link.href = whatsappUrl);
+    document.querySelectorAll("[data-instagram-link]").forEach(link => link.href = CONFIG_MEXIBALLS.instagram);
+    document.querySelectorAll("[data-tiktok-link]").forEach(link => link.href = CONFIG_MEXIBALLS.tiktok);
+    document.querySelectorAll("[data-facebook-link]").forEach(link => link.href = CONFIG_MEXIBALLS.facebook);
+    document.getElementById("addressText").textContent = CONFIG_MEXIBALLS.address;
+    document.getElementById("hoursText").textContent = CONFIG_MEXIBALLS.hours;
+    document.getElementById("whatsappQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(whatsappUrl)}`;
+
+    /* ============================================================
+       2. MOTOR DE TEMPORADAS
+       ============================================================ */
+    const nextNewYear = new Date().getMonth() === 11 ? new Date().getFullYear() + 1 : new Date().getFullYear();
+
+    const seasonConfig = {
+      base: {
+        tag: "Clásica",
+        title: "Tradición hecha al momento",
+        bar: "HECHO CON SABOR Y TRADICIÓN · TIZIMÍN, YUCATÁN",
+        stamp: "SABOR<br>ARTESANAL<br>YUCATÁN",
+        themeColor: "#FAF5EC"
+      },
+      navidad: {
+        tag: "Navidad",
+        title: "Comparte el sabor de diciembre",
+        bar: "EDICIÓN NAVIDEÑA MEXIBALLS · CAJAS PARA COMPARTIR EN FAMILIA",
+        stamp: "EDICIÓN<br>NAVIDEÑA<br>YUCATÁN",
+        themeColor: "#9B2226"
+      },
+      newyear: {
+        tag: "Año Nuevo",
+        title: "Recibe el año con buen sabor",
+        bar: `AÑO NUEVO ${nextNewYear} · CELEBRAMOS CADA BOCADO CONTIGO`,
+        stamp: `FELIZ<br>AÑO NUEVO<br>${nextNewYear}`,
+        themeColor: "#1E2D3D"
+      },
+      sanvalentin: {
+        tag: "San Valentín",
+        title: "Una caja hecha para compartir",
+        bar: "TEMPORADA DEL CARIÑO · COMPARTE MEXIBALLS CON TU PERSONA FAVORITA",
+        stamp: "HECHO<br>CON CARIÑO<br>MEXIBALLS",
+        themeColor: "#A62C43"
+      },
+      verano: {
+        tag: "Verano",
+        title: "Tardes cálidas y antojos frescos",
+        bar: "TEMPORADA DE VERANO · DISFRUTA NUESTRAS ESPECIALIDADES EN TIZIMÍN",
+        stamp: "SABOR<br>DE VERANO<br>YUCATÁN",
+        themeColor: "#C45519"
+      },
+      halloween: {
+        tag: "Otoño · Hanal Pixán",
+        title: "Tradición de temporada y buen antojo",
+        bar: "TEMPORADA DE OTOÑO Y TRADICIÓN · SABORES QUE REÚNEN",
+        stamp: "SABOR DE<br>TEMPORADA<br>YUCATÁN",
+        themeColor: "#B64914"
+      }
+    };
+
+    function detectSeason(date = new Date()) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      if (month === 12 || (month === 11 && day >= 20)) return "navidad";
+      if (month === 1 && day <= 7) return "newyear";
+      if (month === 2 && day <= 16) return "sanvalentin";
+      if (month >= 6 && month <= 8) return "verano";
+      if (month === 10 || (month === 11 && day < 20)) return "halloween";
+      return "base";
+    }
+
+    function applySeason(key) {
+      const config = seasonConfig[key] || seasonConfig.base;
+      document.body.dataset.season = key;
+      document.getElementById("seasonTag").textContent = config.tag;
+      document.getElementById("seasonMessage").textContent = config.title;
+      document.getElementById("seasonBarText").textContent = config.bar;
+      document.getElementById("heroStamp").innerHTML = config.stamp;
+      const metaTheme = document.getElementById("metaThemeColor");
+      if (metaTheme) metaTheme.setAttribute("content", config.themeColor);
+    }
+
+    const seasonSelect = document.getElementById("seasonPreview");
+    const savedSeasonMode = localStorage.getItem("mexiballs_season_mode") || "auto";
+    seasonSelect.value = savedSeasonMode;
+    applySeason(savedSeasonMode === "auto" ? detectSeason() : savedSeasonMode);
+
+    seasonSelect.addEventListener("change", () => {
+      const selected = seasonSelect.value;
+      localStorage.setItem("mexiballs_season_mode", selected);
+      applySeason(selected === "auto" ? detectSeason() : selected);
+      showToast(`Vista cambiada a: ${seasonSelect.options[seasonSelect.selectedIndex].text}`);
+    });
+
+    /* ============================================================
+       3. CARGA AUTOMÁTICA DE IMÁGENES EN CARPETA "imagenes/"
+       ============================================================ */
+    const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
+    document.querySelectorAll("[data-auto-img]").forEach(img => {
+      const baseName = img.dataset.autoImg;
+      let extIndex = 0;
+      img.style.display = "none";
+
+      function tryNextExtension() {
+        if (extIndex >= IMAGE_EXTENSIONS.length) {
+          img.style.display = "none";
+          return;
+        }
+        img.src = `imagenes/${baseName}.${IMAGE_EXTENSIONS[extIndex++]}`;
+      }
+
+      img.addEventListener("load", () => {
+        img.style.display = "block";
+        if (img.closest(".receipt-logo-box")) {
+          const fb = document.getElementById("receiptLogoFallback");
+          if (fb) fb.style.display = "none";
+        }
+      });
+      img.addEventListener("error", tryNextExtension);
+      tryNextExtension();
+    });
+
+    /* ============================================================
+       4. LÓGICA DE VENTAS, CUADRE CONTABLE Y PAGO CON TARJETA
+       ============================================================ */
+    const sizes = {
+      individual: { label: "Orden Individual", pieces: 6, price: 70.00 },
+      reunion: { label: "Paquete Reunión", pieces: 12, price: 125.00 }
+    };
+    const flavorNames = { pastor: "Pastor", esquites: "Esquites", costa: "Costa", hongos: "Hongos" };
+    let selectedSize = "individual";
+    let counts = { pastor: 0, esquites: 0, costa: 0, hongos: 0 };
+    let selectedPayMethod = "Tarjeta";
+    let lastReceiptData = null;
+
+    const $ = (id) => document.getElementById(id);
+    const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+    const money = (value) => value.toLocaleString("es-MX", { style: "currency", currency: "MXN" });
+    const totalPieces = () => Object.values(counts).reduce((sum, n) => sum + n, 0);
+    const capacity = () => sizes[selectedSize].pieces;
+
+    function showToast(message) {
+      const toast = $("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2700);
+    }
+
+    function getPromo() {
+      const code = $("promo").value.trim().toUpperCase();
+      const subtotal = sizes[selectedSize].price;
+      if (code === "2X1PRIMERA") return { code, discount: round2(subtotal * 0.5), label: "Promoción 2×1 (50%)", valid: true };
+      if (code === "MEXI10") return { code, discount: round2(subtotal * 0.10), label: "Descuento MEXI10 (10%)", valid: true };
+      if (!code) return { code: "", discount: 0, label: "", valid: false };
+      return { code, discount: 0, label: "Código no reconocido", valid: false };
+    }
+
+    function getFinancialTotals() {
+      const subtotal = round2(sizes[selectedSize].price);
+      const promo = getPromo();
+      const discount = round2(promo.discount);
+      const total = round2(subtotal - discount);
+      const base = round2(total / 1.16);
+      const iva = round2(total - base);
+      return { subtotal, discount, total, base, iva, promo };
+    }
+
+    function updateSummary() {
+      const fin = getFinancialTotals();
+      $("summaryPieces").textContent = capacity();
+      $("subtotal").textContent = money(fin.subtotal);
+      $("discountLine").hidden = fin.discount <= 0;
+      $("discountLabel").textContent = fin.promo.label;
+      $("discountAmount").textContent = "-" + money(fin.discount);
+      $("taxBase").textContent = money(fin.base);
+      $("taxIva").textContent = money(fin.iva);
+      $("total").textContent = money(fin.total) + " MXN";
+
+      $("promoStatus").textContent = !fin.promo.code
+        ? "Ingresa un código para validar tu promoción."
+        : (fin.promo.valid
+          ? "Código aplicado correctamente."
+          : "Código no válido. Verifica que esté bien escrito.");
+      $("promoStatus").style.color = fin.promo.valid ? "var(--secondary)" : (fin.promo.code ? "var(--primary)" : "var(--muted)");
+    }
+
+    function render() {
+      const used = totalPieces();
+      const cap = capacity();
+      Object.keys(counts).forEach(key => {
+        $("count-" + key).textContent = counts[key];
+        document.querySelectorAll(`[data-flavor="${key}"][data-action="minus"]`).forEach(btn => btn.disabled = counts[key] === 0);
+        document.querySelectorAll(`[data-flavor="${key}"][data-action="plus"]`).forEach(btn => btn.disabled = used >= cap);
+      });
+      $("progressText").textContent = `${used} de ${cap} piezas`;
+      $("progressBar").style.width = `${Math.min(100, (used / cap) * 100)}%`;
+
+      const ready = used === cap;
+      $("processPaymentBtn").textContent = ready
+        ? "Pagar y Generar Recibo"
+        : `Completa tu caja (faltan ${cap - used})`;
+      $("sendOrder").textContent = ready
+        ? "Enviar pedido por WhatsApp ↗"
+        : `Faltan ${cap - used} pieza(s) para WhatsApp`;
+      updateSummary();
+    }
+
+    function changeCount(flavor, delta) {
+      const next = counts[flavor] + delta;
+      if (next < 0 || (delta > 0 && totalPieces() >= capacity())) return;
+      counts[flavor] = next;
+      render();
+    }
+
+    document.querySelectorAll(".size-option").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedSize = button.dataset.size;
+        document.querySelectorAll(".size-option").forEach(b => b.classList.toggle("active", b === button));
+        const cap = capacity();
+        while (totalPieces() > cap) {
+          const maxKey = Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
+          counts[maxKey]--;
+        }
+        render();
+      });
+    });
+
+    $("counterList").addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (button) changeCount(button.dataset.flavor, button.dataset.action === "plus" ? 1 : -1);
+    });
+
+    document.querySelectorAll(".add-flavor").forEach(button => {
+      button.addEventListener("click", () => {
+        const flavor = button.dataset.flavor;
+        if (totalPieces() >= capacity()) {
+          showToast("Tu caja ya está completa. Cambia a 12 piezas si deseas más.");
+          document.querySelector("#armador").scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+        changeCount(flavor, 1);
+        document.querySelector("#armador").scrollIntoView({ behavior: "smooth" });
+        showToast(`${flavorNames[flavor]} agregado a tu caja`);
+      });
+    });
+
+    $("randomFill").addEventListener("click", () => {
+      counts = { pastor: 0, esquites: 0, costa: 0, hongos: 0 };
+      const keys = Object.keys(counts);
+      for (let i = 0; i < capacity(); i++) {
+        counts[keys[i % keys.length]]++;
+      }
+      render();
+      showToast("Caja mixta completada");
+    });
+
+    $("applyWelcomePromo").addEventListener("click", () => {
+      $("promo").value = "2X1PRIMERA";
+      updateSummary();
+      document.querySelector("#armador").scrollIntoView({ behavior: "smooth" });
+      showToast("Código 2X1PRIMERA aplicado");
+    });
+
+    $("promo").addEventListener("input", updateSummary);
+
+    /* ============================================================
+       5. CONTROLES DE FACTURA Y FORMULARIO DE TARJETA
+       ============================================================ */
+    $("invoiceType").addEventListener("change", () => {
+      const isFiscal = $("invoiceType").value.includes("CFDI");
+      $("fiscalFields").hidden = !isFiscal;
+    });
+
+    $("customerName").addEventListener("input", () => {
+      if (!$("cardHolder").dataset.edited) {
+        $("cardHolder").value = $("customerName").value;
+        updateVirtualCard();
+      }
+    });
+
+    document.querySelectorAll("#payMethods .pay-method-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedPayMethod = btn.dataset.method;
+        document.querySelectorAll("#payMethods .pay-method-btn").forEach(b => b.classList.toggle("active", b === btn));
+        $("cardSection").hidden = selectedPayMethod !== "Tarjeta";
+        $("transferSection").hidden = selectedPayMethod !== "Transferencia SPEI";
+        $("cashSection").hidden = selectedPayMethod !== "Efectivo";
+      });
+    });
+
+    function detectCardNetwork(digits) {
+      if (/^4/.test(digits)) return "VISA";
+      if (/^(5[1-5]|2[2-7])/.test(digits)) return "MASTERCARD";
+      if (/^3[47]/.test(digits)) return "AMEX";
+      return "TARJETA";
+    }
+
+    function updateVirtualCard() {
+      const raw = $("cardNumber").value.replace(/\D/g, "");
+      const formatted = raw.replace(/(.{4})/g, "$1 ").trim();
+      $("vcNumberDisplay").textContent = formatted || "•••• •••• •••• ••••";
+      $("vcBrandLabel").textContent = detectCardNetwork(raw);
+      $("vcTypeLabel").textContent = $("cardKind").value.toUpperCase();
+      $("vcHolderDisplay").textContent = ($("cardHolder").value.trim() || "TITULAR DE LA TARJETA").toUpperCase();
+      $("vcExpDisplay").textContent = $("cardExpiry").value.trim() || "MM/AA";
+    }
+
+    $("cardNumber").addEventListener("input", () => {
+      const digits = $("cardNumber").value.replace(/\D/g, "").slice(0, 16);
+      $("cardNumber").value = digits.replace(/(.{4})/g, "$1 ").trim();
+      updateVirtualCard();
+    });
+
+    $("cardHolder").addEventListener("input", () => {
+      $("cardHolder").dataset.edited = "1";
+      updateVirtualCard();
+    });
+
+    $("cardKind").addEventListener("change", updateVirtualCard);
+
+    $("cardExpiry").addEventListener("input", () => {
+      let val = $("cardExpiry").value.replace(/\D/g, "").slice(0, 4);
+      if (val.length >= 3) val = val.slice(0, 2) + "/" + val.slice(2);
+      $("cardExpiry").value = val;
+      updateVirtualCard();
+    });
+
+    $("cardCvv").addEventListener("input", () => {
+      $("cardCvv").value = $("cardCvv").value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    $("fillDemoCard").addEventListener("click", () => {
+      $("cardNumber").value = "4532 7562 7962 4242";
+      $("cardHolder").value = ($("customerName").value.trim() || "CLIENTE MEXIBALLS").toUpperCase();
+      $("cardExpiry").value = "09/29";
+      $("cardCvv").value = "842";
+      updateVirtualCard();
+      showToast("Datos de tarjeta de prueba cargados");
+    });
+
+    function validateCardForm() {
+      const digits = $("cardNumber").value.replace(/\D/g, "");
+      if (digits.length < 15 || digits.length > 16) {
+        $("cardNumber").focus();
+        return "Ingresa un número de tarjeta válido de 15 o 16 dígitos.";
+      }
+      if (!$("cardHolder").value.trim()) {
+        $("cardHolder").focus();
+        return "Ingresa el nombre del titular de la tarjeta.";
+      }
+      const exp = $("cardExpiry").value.trim();
+      const match = exp.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+      if (!match) {
+        $("cardExpiry").focus();
+        return "Ingresa una fecha de vencimiento válida (MM/AA).";
+      }
+      const expMonth = parseInt(match[1], 10);
+      const expYear = 2000 + parseInt(match[2], 10);
+      const now = new Date();
+      if (expYear < now.getFullYear() || (expYear === now.getFullYear() && expMonth < now.getMonth() + 1)) {
+        $("cardExpiry").focus();
+        return "La tarjeta ingresada se encuentra vencida.";
+      }
+      const cvv = $("cardCvv").value.replace(/\D/g, "");
+      if (cvv.length < 3) {
+        $("cardCvv").focus();
+        return "Ingresa el código de seguridad CVV (3 o 4 dígitos).";
+      }
+      return null;
+    }
+
+    /* ============================================================
+       6. GENERACIÓN DE RECIBO DE PAGO, PDF E IMPRESIÓN
+       ============================================================ */
+    function numberToWordsMXN(amount) {
+      const entero = Math.floor(amount);
+      const centavos = Math.round((amount - entero) * 100);
+      const centStr = String(centavos).padStart(2, "0");
+      const especiales = {
+        35: "TREINTA Y CINCO",
+        62: "SESENTA Y DOS",
+        63: "SESENTA Y TRES",
+        70: "SETENTA",
+        112: "CIENTO DOCE",
+        113: "CIENTO TRECE",
+        125: "CIENTO VEINTICINCO"
+      };
+      const texto = especiales[entero] || `${entero}`;
+      return `${texto} PESOS ${centStr}/100 M.N.`;
+    }
+
+    function getSalesHistory() {
+      return JSON.parse(localStorage.getItem("mexiballs_sales_ledger") || "[]");
+    }
+
+    function saveSaleRecord(record) {
+      const history = getSalesHistory();
+      history.unshift(record);
+      localStorage.setItem("mexiballs_sales_ledger", JSON.stringify(history));
+      updateLedgerBadge();
+    }
+
+    function updateLedgerBadge() {
+      $("salesCountBadge").textContent = getSalesHistory().length;
+    }
+
+    function openReceiptModal(sale) {
+      lastReceiptData = sale;
+      $("recCompanyName").textContent = CONFIG_MEXIBALLS.legalName;
+      $("recCompanyRfc").textContent = CONFIG_MEXIBALLS.rfc;
+      $("recCompanyAddress").textContent = CONFIG_MEXIBALLS.address;
+      $("recCompanyPhone").textContent = `Tel. ${CONFIG_MEXIBALLS.phone} · ${CONFIG_MEXIBALLS.taxRegime}`;
+
+      $("recFolio").textContent = `FOLIO: ${sale.folio}`;
+      $("recDate").textContent = `Fecha: ${sale.date}`;
+      $("recClientName").textContent = sale.customerName;
+      $("recInvoiceType").textContent = sale.invoiceType;
+      $("recClientRfc").textContent = `${sale.clientRfc} · ${sale.cfdiUse}`;
+      $("recPayMethod").textContent = sale.paymentDetail;
+      $("recDelivery").textContent = sale.delivery;
+      $("recAuthCode").textContent = sale.authCode;
+
+      $("recItemsBody").innerHTML = `
+        <tr>
+          <td>1</td>
+          <td>
+            <strong>${sale.packageLabel} (${sale.pieces} piezas)</strong><br>
+            <span style="color:#544B42">Sabores: ${sale.flavorsText}</span><br>
+            <span style="color:#544B42">Salsas/Toppings: ${sale.toppingsText}</span>
+          </td>
+          <td class="num">${money(sale.subtotal)}</td>
+          <td class="num">${money(sale.subtotal)}</td>
+        </tr>
+      `;
+
+      $("recSubtotal").textContent = money(sale.subtotal);
+      $("recDiscountRow").hidden = sale.discount <= 0;
+      $("recPromoCode").textContent = sale.promoCode;
+      $("recDiscount").textContent = "-" + money(sale.discount);
+      $("recBase").textContent = money(sale.base);
+      $("recIva").textContent = money(sale.iva);
+      $("recTotal").textContent = money(sale.total) + " MXN";
+      $("recWords").textContent = `IMPORTE CON LETRA: ${numberToWordsMXN(sale.total)}`;
+
+      $("receiptModal").classList.add("open");
+    }
+
+    $("processPaymentBtn").addEventListener("click", () => {
+      const missing = capacity() - totalPieces();
+      if (missing > 0) {
+        $("counterList").scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast(`Completa tu caja: faltan ${missing} pieza(s).`);
+        return;
+      }
+
+      const customerName = $("customerName").value.trim();
+      if (!customerName) {
+        $("customerName").focus();
+        showToast("Escribe el nombre del cliente para generar el recibo.");
+        return;
+      }
+
+      const invoiceType = $("invoiceType").value;
+      const isFiscal = invoiceType.includes("CFDI");
+      let clientRfc = "XAXX010101000";
+      let cfdiUse = "S01 - Sin efectos fiscales";
+
+      if (isFiscal) {
+        clientRfc = $("clientRfc").value.trim().toUpperCase();
+        if (clientRfc.length < 12) {
+          $("clientRfc").focus();
+          showToast("Ingresa un RFC válido de 12 o 13 caracteres para facturar.");
+          return;
+        }
+        cfdiUse = $("cfdiUse").value;
+      }
+
+      let paymentDetail = selectedPayMethod;
+      let authCode = "SPEI-" + Math.floor(100000 + Math.random() * 900000);
+
+      if (selectedPayMethod === "Tarjeta") {
+        const cardError = validateCardForm();
+        if (cardError) {
+          showToast(cardError);
+          return;
+        }
+        const digits = $("cardNumber").value.replace(/\D/g, "");
+        const last4 = digits.slice(-4);
+        const network = detectCardNetwork(digits);
+        const kind = $("cardKind").value;
+        paymentDetail = `${kind} (${network} •••• ${last4}) · PUE`;
+        authCode = "AUT-" + Math.floor(100000 + Math.random() * 900000);
+      } else if (selectedPayMethod === "Efectivo") {
+        paymentDetail = "Efectivo (01) · Pago en una sola exhibición";
+        authCode = "EFEC-" + Math.floor(1000 + Math.random() * 9000);
+      }
+
+      const fin = getFinancialTotals();
+      const size = sizes[selectedSize];
+      const selectedToppings = [...document.querySelectorAll('input[name="topping"]:checked')].map(i => i.value);
+      const delivery = document.querySelector('input[name="delivery"]:checked').value;
+      const flavorsText = Object.entries(counts)
+        .filter(([, qty]) => qty > 0)
+        .map(([k, qty]) => `${flavorNames[k]} (${qty})`)
+        .join(", ");
+
+      const now = new Date();
+      const folioNum = String(getSalesHistory().length + 1).padStart(4, "0");
+      const folio = `MB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${folioNum}`;
+      const dateFormatted = now.toLocaleString("es-MX", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
+      });
+
+      const saleRecord = {
+        folio,
+        date: dateFormatted,
+        customerName,
+        invoiceType,
+        clientRfc,
+        cfdiUse,
+        payCategory: selectedPayMethod,
+        paymentDetail,
+        authCode,
+        delivery,
+        packageLabel: size.label,
+        pieces: size.pieces,
+        flavorsText,
+        toppingsText: selectedToppings.length ? selectedToppings.join(", ") : "Sin toppings",
+        promoCode: fin.promo.valid ? fin.promo.code : "",
+        subtotal: fin.subtotal,
+        discount: fin.discount,
+        base: fin.base,
+        iva: fin.iva,
+        total: fin.total
+      };
+
+      saveSaleRecord(saleRecord);
+      openReceiptModal(saleRecord);
+      showToast("Pago procesado y recibo generado");
+    });
+
+    /* Impresión limpia dedicada en iframe oculto (1 hoja exacta sin recortes) */
+    function printReceiptClean() {
+      const receiptEl = $("receiptPrintable");
+      const folio = lastReceiptData ? lastReceiptData.folio : "RECIBO";
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "fixed";
+      iframe.style.right = "0";
+      iframe.style.bottom = "0";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.style.border = "0";
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Recibo_${folio}</title>
+  <style>
+    @page { size: auto; margin: 12mm; }
+    * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: #1A1816;
+      background: #FFFFFF;
+    }
+    .receipt-sheet {
+      border: 1px solid #DCD4C8;
+      padding: 22px;
+      background: #FFFDFB;
+      font-size: 0.85rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid #1F1A16;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .receipt-brand { display: flex; align-items: center; gap: 12px; }
+    .receipt-logo-box {
+      width: 62px; height: 62px;
+      border: 1px solid #E2D8C9;
+      background: #FAF5EC;
+      border-radius: 4px;
+      display: grid; place-items: center;
+      overflow: hidden; flex: none;
+    }
+    .receipt-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+    .receipt-logo-fallback {
+      font-family: Georgia, serif; font-weight: 700;
+      font-size: 0.72rem; letter-spacing: 0.08em;
+      color: #B83B1E; text-align: center;
+    }
+    .receipt-company h4 { margin: 0; font-family: Georgia, serif; font-size: 1.15rem; letter-spacing: 0.08em; }
+    .receipt-company p { margin: 2px 0; font-size: 0.75rem; color: #544B42; line-height: 1.35; }
+    .receipt-badge { text-align: right; flex: none; }
+    .receipt-status {
+      display: inline-block; background: #1C4E38; color: #FFFFFF;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+    }
+    .receipt-folio {
+      display: block; font-family: "Courier New", monospace;
+      font-weight: 700; font-size: 0.84rem; margin-top: 6px; color: #B83B1E;
+    }
+    .receipt-meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
+      background: #F7F2EA; border: 1px solid #E5DDD0;
+      padding: 12px; border-radius: 4px; margin-bottom: 14px; font-size: 0.78rem;
+    }
+    .receipt-meta-grid div strong {
+      display: block; font-size: 0.68rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: #6B6055;
+    }
+    .receipt-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 0.8rem; }
+    .receipt-table th {
+      text-align: left; border-bottom: 1.5px solid #1F1A16;
+      padding: 6px 4px; font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: #544B42;
+    }
+    .receipt-table td { padding: 8px 4px; border-bottom: 1px solid #E8E0D4; vertical-align: top; }
+    .receipt-table .num { text-align: right; white-space: nowrap; }
+    .receipt-totals { margin-left: auto; width: 270px; font-size: 0.82rem; }
+    .receipt-totals div { display: flex; justify-content: space-between; padding: 3px 0; }
+    .receipt-totals .grand {
+      border-top: 2px solid #1F1A16; margin-top: 6px; padding-top: 7px;
+      font-size: 1.02rem; font-weight: 700; color: #B83B1E;
+    }
+    .receipt-words {
+      margin-top: 10px; padding-top: 8px; border-top: 1px dashed #CFC5B6;
+      font-size: 0.72rem; color: #544B42; text-transform: uppercase;
+    }
+    .receipt-footer-note { margin-top: 12px; text-align: center; font-size: 0.72rem; color: #6B6055; }
+  </style>
+</head>
+<body>
+  <div class="receipt-sheet">${receiptEl.innerHTML}</div>
+</body>
+</html>`);
+      doc.close();
+
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => document.body.removeChild(iframe), 1200);
+      }, 250);
+    }
+
+    /* Descarga directa de archivo PDF con respaldo automático */
+    async function downloadReceiptPdf() {
+      const btn = $("downloadPdfBtn");
+      const folio = lastReceiptData ? lastReceiptData.folio : "RECIBO";
+      const fileName = `Recibo_${folio}.pdf`;
+
+      if (typeof window.html2pdf === "undefined") {
+        showToast("Abriendo vista para guardar como PDF...");
+        printReceiptClean();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Generando PDF...";
+
+      const buildClone = (includeLogoImg) => {
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "fixed";
+        wrapper.style.left = "-9999px";
+        wrapper.style.top = "0";
+        wrapper.style.width = "640px";
+        wrapper.style.background = "#FFFFFF";
+        wrapper.style.padding = "12px";
+
+        const clone = $("receiptPrintable").cloneNode(true);
+        const img = clone.querySelector(".receipt-logo-box img");
+        const fb = clone.querySelector(".receipt-logo-fallback");
+        const logoReady = includeLogoImg && img && img.complete && img.naturalWidth > 0 && img.style.display !== "none";
+
+        if (logoReady) {
+          if (fb) fb.style.display = "none";
+        } else {
+          if (img) img.remove();
+          if (fb) fb.style.display = "block";
+        }
+
+        wrapper.appendChild(clone);
+        document.body.appendChild(wrapper);
+        return { wrapper, clone };
+      };
+
+      const pdfOptions = {
+        margin: 10,
+        filename: fileName,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#FFFDFB" },
+        jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
+      };
+
+      let attempt = buildClone(true);
+      try {
+        await window.html2pdf().set(pdfOptions).from(attempt.clone).save();
+        document.body.removeChild(attempt.wrapper);
+        showToast(`PDF descargado: ${fileName}`);
+      } catch (err) {
+        document.body.removeChild(attempt.wrapper);
+        const fallbackAttempt = buildClone(false);
+        try {
+          await window.html2pdf().set(pdfOptions).from(fallbackAttempt.clone).save();
+          document.body.removeChild(fallbackAttempt.wrapper);
+          showToast(`PDF descargado: ${fileName}`);
+        } catch (err2) {
+          document.body.removeChild(fallbackAttempt.wrapper);
+          printReceiptClean();
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Descargar PDF";
+      }
+    }
+
+    $("downloadPdfBtn").addEventListener("click", downloadReceiptPdf);
+    $("printReceiptBtn").addEventListener("click", printReceiptClean);
+
+    $("whatsappReceiptBtn").addEventListener("click", () => {
+      if (!lastReceiptData) return;
+      const s = lastReceiptData;
+      const text = [
+        `*RECIBO DE PAGO - ${CONFIG_MEXIBALLS.brand}*`,
+        `Folio: ${s.folio}`,
+        `Fecha: ${s.date}`,
+        `RFC Emisor: ${CONFIG_MEXIBALLS.rfc}`,
+        `Cliente: ${s.customerName}`,
+        `Tipo Factura: ${s.invoiceType}`,
+        `Método de Pago: ${s.paymentDetail}`,
+        `Autorización: ${s.authCode}`,
+        `Consumo: ${s.packageLabel} (${s.flavorsText})`,
+        `Entrega: ${s.delivery}`,
+        `Subtotal: ${money(s.subtotal)}`,
+        s.discount > 0 ? `Descuento: -${money(s.discount)}` : null,
+        `Base sin IVA: ${money(s.base)} | IVA (16%): ${money(s.iva)}`,
+        `*TOTAL PAGADO: ${money(s.total)} MXN*`
+      ].filter(Boolean).join("\n");
+
+      window.open(`${whatsappUrl}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    });
+
+    $("closeReceiptBtn").addEventListener("click", () => {
+      $("receiptModal").classList.remove("open");
+      counts = { pastor: 0, esquites: 0, costa: 0, hongos: 0 };
+      $("cardCvv").value = "";
+      render();
+    });
+
+    /* ============================================================
+       7. MODAL DE CORTE Y CUADRE CONTABLE DE VENTAS
+       ============================================================ */
+    function renderLedger() {
+      const sales = getSalesHistory();
+      let totalMoney = 0;
+      let totalPzs = 0;
+      const byMethod = { "Tarjeta": 0, "Transferencia SPEI": 0, "Efectivo": 0 };
+
+      sales.forEach(s => {
+        totalMoney = round2(totalMoney + s.total);
+        totalPzs += s.pieces;
+        byMethod[s.payCategory] = round2((byMethod[s.payCategory] || 0) + s.total);
+      });
+
+      $("ledCount").textContent = sales.length;
+      $("ledPieces").textContent = totalPzs;
+      $("ledTotal").textContent = money(totalMoney);
+
+      $("ledBreakdown").innerHTML = `
+        <strong>Desglose por método de pago:</strong>
+        Tarjeta: <strong>${money(byMethod["Tarjeta"])}</strong> ·
+        Transferencia: <strong>${money(byMethod["Transferencia SPEI"])}</strong> ·
+        Efectivo: <strong>${money(byMethod["Efectivo"])}</strong>
+      `;
+
+      $("ledgerBody").innerHTML = sales.length
+        ? sales.map(s => `
+            <tr>
+              <td style="font-family:monospace;font-size:0.74rem">${s.folio}</td>
+              <td>${s.customerName}</td>
+              <td>${s.payCategory}</td>
+              <td>${s.invoiceType.includes("CFDI") ? "CFDI 4.0" : "Nota"}</td>
+              <td style="text-align:right;font-weight:700">${money(s.total)}</td>
+            </tr>
+          `).join("")
+        : `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:16px">Aún no hay ventas cobradas registradas.</td></tr>`;
+    }
+
+    $("openLedgerBtn").addEventListener("click", () => {
+      renderLedger();
+      $("ledgerModal").classList.add("open");
+    });
+
+    $("closeLedgerBtn").addEventListener("click", () => {
+      $("ledgerModal").classList.remove("open");
+    });
+
+    $("clearLedgerBtn").addEventListener("click", () => {
+      localStorage.removeItem("mexiballs_sales_ledger");
+      updateLedgerBadge();
+      renderLedger();
+      showToast("Corte de ventas reiniciado");
+    });
+
+    /* ============================================================
+       8. ENVÍO DIRECTO POR WHATSAPP (SIN PAGO CON TARJETA)
+       ============================================================ */
+    $("sendOrder").addEventListener("click", () => {
+      const missing = capacity() - totalPieces();
+      if (missing > 0) {
+        $("counterList").scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast(`Completa tu caja: faltan ${missing} pieza(s).`);
+        return;
+      }
+      const name = $("customerName").value.trim();
+      if (!name) {
+        $("customerName").focus();
+        showToast("Escribe tu nombre para continuar.");
+        return;
+      }
+      const selectedToppings = [...document.querySelectorAll('input[name="topping"]:checked')].map(input => input.value);
+      const delivery = document.querySelector('input[name="delivery"]:checked').value;
+      const size = sizes[selectedSize];
+      const fin = getFinancialTotals();
+      const flavorLines = Object.entries(counts)
+        .filter(([, qty]) => qty > 0)
+        .map(([key, qty]) => `- ${flavorNames[key]}: ${qty} pieza(s)`);
+
+      const message = [
+        "Hola, MEXIBALLS. Me gustaría realizar el siguiente pedido:",
+        "",
+        `Nombre: ${name}`,
+        `Presentación: ${size.label} (${size.pieces} piezas)`,
+        "Sabores:",
+        ...flavorLines,
+        `Salsas y toppings: ${selectedToppings.length ? selectedToppings.join(", ") : "Sin toppings"}`,
+        `Entrega: ${delivery}`,
+        `Método de pago elegido: ${selectedPayMethod}`,
+        `Tipo de comprobante: ${$("invoiceType").value}`,
+        `Código promocional: ${fin.promo.code || "Ninguno"}`,
+        `Subtotal: ${money(fin.subtotal)}`,
+        `Descuento: -${money(fin.discount)}`,
+        `Total estimado: ${money(fin.total)} MXN`,
+        "",
+        "¿Me confirman disponibilidad y tiempo de entrega? Gracias."
+      ].join("\n");
+
+      window.open(`${whatsappUrl}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
+    });
+
+    /* ============================================================
+       9. MENÚ MÓVIL, BUSCADOR Y PERSISTENCIA DEL EQUIPO
+       ============================================================ */
+    $("menuToggle").addEventListener("click", () => {
+      const open = $("navLinks").classList.toggle("open");
+      $("menuToggle").setAttribute("aria-expanded", String(open));
+      $("menuToggle").textContent = open ? "×" : "☰";
+    });
+
+    document.querySelectorAll("#navLinks a").forEach(link => link.addEventListener("click", () => {
+      $("navLinks").classList.remove("open");
+      $("menuToggle").setAttribute("aria-expanded", "false");
+      $("menuToggle").textContent = "☰";
+    }));
+
+    const flavorSearch = $("flavorSearch");
+    const normalizeText = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    function filterFlavors() {
+      const q = normalizeText(flavorSearch.value.trim());
+      let visibleCount = 0;
+      document.querySelectorAll(".flavor-card").forEach(card => {
+        const text = normalizeText(card.textContent);
+        const match = !q || text.includes(q);
+        card.hidden = !match;
+        card.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+      $("emptySearch").hidden = visibleCount > 0;
+    }
+    flavorSearch.addEventListener("input", filterFlavors);
+    flavorSearch.addEventListener("search", filterFlavors);
+    flavorSearch.addEventListener("keyup", filterFlavors);
+    $("clearSearch").addEventListener("click", () => {
+      flavorSearch.value = "";
+      filterFlavors();
+      flavorSearch.focus();
+    });
+
+    const savedTeam = JSON.parse(localStorage.getItem("mexiballs_team_names") || "{}");
+    document.querySelectorAll(".team-name").forEach(el => {
+      const id = el.dataset.teamId;
+      if (savedTeam[id]) el.textContent = savedTeam[id];
+      el.addEventListener("input", () => {
+        savedTeam[id] = el.textContent.trim() || `Integrante ${id}`;
+        localStorage.setItem("mexiballs_team_names", JSON.stringify(savedTeam));
+      });
+    });
+
+    $("year").textContent = new Date().getFullYear();
+    updateLedgerBadge();
+    render();
+  </script>
+</body>
+</html>
